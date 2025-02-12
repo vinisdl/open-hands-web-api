@@ -7,14 +7,21 @@ const baseUrl = process.env.BACKEND_BASE_URL || 'http://localhost:3000'
 const proxyRequest = async (req: Request, res: Response) => {
   // Constrói a URL da API terceira com base no path da requisição recebida
   const targetUrl = baseUrl + req.path
+  console.log(targetUrl)
   try {
-    const response = await axios({
+    const body = {
       method: req.method,
       url: targetUrl,
-      headers: req.headers,
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
       params: req.query,
       data: req.body,
-    })
+    }
+    console.log(body)
+
+    const response = await axios(body)
     res.status(response.status).json(response.data)
   } catch (error: any) {
     if (error.response) {
