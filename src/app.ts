@@ -28,7 +28,8 @@ app.route('/api/ws')
       const result = await executeAction(action, conversationId, message);
       res.status(200).json(result);
     } catch (error) {
-      res.status(500).json({ error: error.message || error });
+      const errMsg = error instanceof Error ? error.message : String(error);
+      res.status(500).json({ error: errMsg });
     }
   });
 
