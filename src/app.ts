@@ -4,11 +4,13 @@ import { executeAction } from './lib/wsClient.js';
 import swaggerUi from 'swagger-ui-express';
 
 import { readFileSync } from 'fs';
+import openhandsController from './controllers/openhandsController.js';
 const swaggerDocument = JSON.parse(readFileSync(new URL('../swagger.json', import.meta.url), 'utf8'));
 
 const app = express();
 
 app.use(cors());
+app.get('/openapi.json', (req, res) => { res.json(swaggerDocument); });
 app.use(express.json());
 
 app.use((req, res, next) => {
