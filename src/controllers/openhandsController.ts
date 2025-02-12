@@ -1,116 +1,68 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express'
+import axios from 'axios'
 
-const router = Router();
+const router = Router()
+const baseUrl = process.env.BACKEND_BASE_URL || 'http://localhost:3000'
 
-// Health endpoint
-router.get('/health', (req, res) => {
-  res.json({ status: 'healthy' });
-});
+const proxyRequest = async (req: Request, res: Response) => {
+  // Constrói a URL da API terceira com base no path da requisição recebida
+  const targetUrl = baseUrl + req.path
+  try {
+    const response = await axios({
+      method: req.method,
+      url: targetUrl,
+      headers: req.headers,
+      params: req.query,
+      data: req.body,
+    })
+    res.status(response.status).json(response.data)
+  } catch (error: any) {
+    if (error.response) {
+      res.status(error.response.status).json(error.response.data)
+    } else {
+      res.status(500).json({ error: error.message })
+    }
+  }
+}
 
-// Options endpoints
-router.get('/api/options/models', (req, res) => {
-  res.json(['modelA', 'modelB']);
-});
+// Health
+router.get('/health', proxyRequest)
 
-router.get('/api/options/agents', (req, res) => {
-  res.json(['agentA', 'agentB']);
-});
+// API Options
+router.get('/api/options/models', proxyRequest)
+router.get('/api/options/agents', proxyRequest)
+router.get('/api/options/security-analyzers', proxyRequest)
+router.get('/api/options/config', proxyRequest)
 
-router.get('/api/options/security-analyzers', (req, res) => {
-  res.json(['analyzerA', 'analyzerB']);
-});
+// Conversações: List Files, Select File, Upload Files, Save File, Zip Directory, Submit Feedback, Config, VSCode URL, Web Hosts
+router.get('/api/conversations/:conversation_id/list-files', proxyRequest)
+router.get('/api/conversations/:conversation_id/select-file', proxyRequest)
+router.post('/api/conversations/:conversation_id/upload-files', proxyRequest)
+router.post('/api/conversations/:conversation_id/save-file', proxyRequest)
+router.get('/api/conversations/:conversation_id/zip-directory', proxyRequest)
+router.post('/api/conversations/:conversation_id/submit-feedback', proxyRequest)
+router.get('/api/conversations/:conversation_id/config', proxyRequest)
+router.get('/api/conversations/:conversation_id/vscode-url', proxyRequest)
+router.get('/api/conversations/:conversation_id/web-hosts', proxyRequest)
 
-router.get('/api/options/config', (req, res) => {
-  res.json({ config: 'default' });
-});
+// Conversações: Nova, Busca, Get, Update, Delete
+router.post('/api/conversations', proxyRequest)
+router.get('/api/conversations', proxyRequest)
+router.get('/api/conversations/:conversation_id', proxyRequest)
+router.patch('/api/conversations/:conversation_id', proxyRequest)
+router.delete('/api/conversations/:conversation_id', proxyRequest)
 
-// Conversations endpoints
-router.get('/api/conversations/:conversation_id/list-files', (req, res) => {
-  res.json({ files: [] });
-});
+// Settings: Load e Store
+router.get('/api/settings', proxyRequest)
+router.post('/api/settings', proxyRequest)
 
-router.get('/api/conversations/:conversation_id/select-file', (req, res) => {
-  res.json({ fileContent: 'dummy file content' });
-});
-
-router.post('/api/conversations/:conversation_id/upload-files', (req, res) => {
-  res.json({ message: 'files uploaded' });
-});
-
-router.post('/api/conversations/:conversation_id/save-file', (req, res) => {
-  res.json({ message: 'file saved' });
-});
-
-router.get('/api/conversations/:conversation_id/zip-directory', (req, res) => {
-  res.json({ zipUrl: 'http://example.com/zip' });
-});
-
-router.post('/api/conversations/:conversation_id/submit-feedback', (req, res) => {
-  res.json({ feedback: 'submitted' });
-});
-
-router.get('/api/conversations/:conversation_id/config', (req, res) => {
-  res.json({ sessionId: 'session-id', runtimeId: 'runtime-id' });
-});
-
-router.get('/api/conversations/:conversation_id/vscode-url', (req, res) => {
-  res.json({ vscodeUrl: 'http://vscode.example.com' });
-});
-
-router.get('/api/conversations/:conversation_id/web-hosts', (req, res) => {
-  res.json({ hosts: [] });
-});
-
-// Conversations operations
-router.post('/api/conversations', (req, res) => {
-  res.json({ conversation_id: 'new_conversation' });
-});
-
-router.get('/api/conversations', (req, res) => {
-  res.json({ conversations: [] });
-});
-
-router.get('/api/conversations/:conversation_id', (req, res) => {
-  res.json({ conversation: {} });
-});
-
-router.patch('/api/conversations/:conversation_id', (req, res) => {
-  res.json({ updated: true });
-});
-
-router.delete('/api/conversations/:conversation_id', (req, res) => {
-  res.json({ deleted: true });
-});
-
-// Settings endpoints
-router.get('/api/settings', (req, res) => {
-  res.json({ settings: {} });
-});
-
-router.post('/api/settings', (req, res) => {
-  res.json({ stored: true });
-});
-
-// Github endpoints
-router.get('/api/github/repositories', (req, res) => {
-  res.json({ repositories: [] });
-});
-
-router.get('/api/github/user', (req, res) => {
-  res.json({ user: {} });
-});
-
-router.get('/api/github/installations', (req, res) => {
-  res.json({ installations: [] });
-});
-
-router.get('/api/github/search/repositories', (req, res) => {
-  res.json({ results: [] });
-});
+// Github Endpoints
+router.get('/api/github/repositories', proxyRequest)
+router.get('/api/github/user', proxyRequest)
+router.get('/api/github/installations', proxyRequest)
+router.get('/api/github/search/repositories', proxyRequest)
 
 // Trajectory
-router.get('/api/conversations/:conversation_id/trajectory', (req, res) => {
-  res.json({ trajectory: [] });
-});
+router.get('/api/conversations/:conversation_id/trajectory', proxyRequest)
 
-export default router;
+export default router
