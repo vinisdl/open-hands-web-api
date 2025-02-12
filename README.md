@@ -25,21 +25,21 @@ All endpoints are documented using the OpenAPI Specification. Interactive docume
 
 1. Clone the repository:
 
-   ```bash
+```bash
 git clone https://github.com/vinisdl/open-hands-web-api.git
-   ```
+```
 
 2. Navigate to the project directory:
 
-   ```bash
+```bash
 cd open-hands-web-api
-   ```
+```
 
 3. Install the dependencies:
 
-   ```bash
+```bash
 npm install
-   ```
+```
 
 ## Development
 
