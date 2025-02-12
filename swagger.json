@@ -24,46 +24,22 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "action": {
-                    "type": "string"
-                  },
+                  "action": { "type": "string" },
                   "message": {
                     "type": "object",
                     "properties": {
-                      "action": {
-                        "type": "string"
-                      },
-                      "args": {
-                        "type": "object",
-                        "properties": {
-                          "content": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "content"
-                        ]
-                      }
-                    },
-                    "required": [
-                      "action",
-                      "args"
-                    ]
+                      "id": { "type": "integer" },
+                      "message": { "type": "string", "example": "do anything" }
+                    }
                   },
-                  "conversationId": {
-                    "type": "string"
-                  }
+                  "conversationId": { "type": "string" }
                 },
-                "required": [
-                  "action"
-                ],
+                "required": ["action"],
                 "example": {
                   "action": "send",
-                  "message": {
+                  "message": { 
                     "action": "message",
-                    "args": {
-                      "content": "renomeie para ggg.sh"
-                    }
+                    "args": { "content": "renomeie para ggg.sh" }
                   },
                   "conversationId": "f64e1b8b679e4a669758e668ec1b4e73"
                 }
@@ -72,12 +48,8 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Action performed successfully"
-          },
-          "400": {
-            "description": "Bad request"
-          }
+          "200": { "description": "Action performed successfully" },
+          "400": { "description": "Bad request" }
         }
       }
     }
