@@ -1,0 +1,10 @@
+{
+  "action": "send",
+  "message": {
+    "action": "message",
+    "args": {
+      "content": "renomeie para ggg.sh"
+    }
+  },
+  "conversationId": "f64e1b8b679e4a669758e668ec1b4e73"
+}
