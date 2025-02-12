@@ -3,6 +3,9 @@ import cors from 'cors';
 import { executeAction } from './lib/wsClient.js';
 import swaggerUi from 'swagger-ui-express';
 
+import { readFileSync } from 'fs';
+const swaggerDocument = JSON.parse(readFileSync(new URL('../swagger.json', import.meta.url), 'utf8'));
+
 const app = express();
 
 app.use(cors());
@@ -33,55 +36,7 @@ app.route('/api/ws')
     }
   });
 
-const swaggerDocument = {
-  openapi: "3.0.0",
-  info: {
-    title: "WS API",
-    version: "1.0.0",
-    description: "API for WebSocket client."
-  },
-  paths: {
-    "/api/ws": {
-      get: {
-        summary: "Get current connection status and events",
-        responses: {
-          "200": {
-            description: "Success"
-          }
-        }
-      },
-      post: {
-        summary: "Perform an action (connect, disconnect, send) on the WebSocket client",
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  action: { type: "string" },
-                  message: {
-                    type: "object",
-                    properties: {
-                      id: { type: "integer" },
-                      message: { type: "string", example: "do anything" }
-                    }
-                  },
-                  conversationId: { type: "string" }
-                },
-                required: ["action"]
-              }
-            }
-          }
-        },
-        responses: {
-          "200": { description: "Action performed successfully" },
-          "400": { description: "Bad request" }
-        }
-      }
-    }
-  }
-};
+
 
 app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
